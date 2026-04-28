@@ -2,24 +2,27 @@
  *  @name: mainWindow.cpp
  *
  *  @author: Shauna Recto
- * 
+ *
  *  @description: This source file contains all the necessaru implementations
  *      of the main window, and all the different GUI functionalities.
- * 
+ *
  *      It also (should TODO) contains all the boilerplate and the GLFW and
  *      ImGui initializations for the windows.
- * 
+ *
  */
 
-#include <cmath>
-#include <fmt/core.h>
 #include "mainWindow.h"
 #include "tempSettings.h"
+#include <cmath>
+#include <fmt/core.h>
 
-ADMainWindow::ADMainWindow() {
+ADMainWindow::ADMainWindow()
+{
     windowFlags = 0;
-    
-    if (bShowTopMenu) {windowFlags |= ImGuiWindowFlags_MenuBar;}
+
+    if (bShowTopMenu) {
+        windowFlags |= ImGuiWindowFlags_MenuBar;
+    }
     windowFlags |= ImGuiWindowFlags_NoMove;
 
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -27,18 +30,20 @@ ADMainWindow::ADMainWindow() {
     ImGui::SetNextWindowSize(viewport->Size);
 }
 
-ADMainWindow::~ADMainWindow() {
-
+ADMainWindow::~ADMainWindow()
+{
 }
 
-void ADMainWindow::update() {
+void ADMainWindow::update()
+{
     ImGui::Begin(PROGRAM_NAME.c_str(), &isOpen, windowFlags);
     showMenu();
     showOscilloscope();
-    ImGui::End();   
+    ImGui::End();
 }
 
-void ADMainWindow::showMenu() {
+void ADMainWindow::showMenu()
+{
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
@@ -62,29 +67,30 @@ void ADMainWindow::showMenu() {
     }
 }
 
-void ADMainWindow::showOscilloscope() {
+void ADMainWindow::showOscilloscope()
+{
 
     if (bShowOscilloscope) {
 
         /* Raw Audio Output */
-        ImGui::BeginChild("Raw Audio Output", ImVec2(770, 450), ImGuiChildFlags_Border);
+        ImGui::BeginChild("Raw Audio Output", ImVec2(770, 450), ImGuiChildFlags_Borders);
         ImGui::SeparatorText("Raw Audio Output");
         ImGui::EndChild();
 
         /* Downmixed Mono Audio Output */
         ImGui::SameLine();
-        ImGui::BeginChild("Mono Audio Downmix", ImVec2(770, 450), ImGuiChildFlags_Border);
+        ImGui::BeginChild("Mono Audio Downmix", ImVec2(770, 450), ImGuiChildFlags_Borders);
         ImGui::SeparatorText("Mono Audio Downmix");
         ImGui::EndChild();
 
         /* Spectrogram Output */
-        ImGui::BeginChild("Spectrogram", ImVec2(1150, 450), ImGuiChildFlags_Border);
+        ImGui::BeginChild("Spectrogram", ImVec2(1150, 450), ImGuiChildFlags_Borders);
         ImGui::SeparatorText("Spectrogram");
         ImGui::EndChild();
 
         /* Configuration */
         ImGui::SameLine();
-        ImGui::BeginChild("Configuration", ImVec2(390, 450), ImGuiChildFlags_Border);
+        ImGui::BeginChild("Configuration", ImVec2(390, 450), ImGuiChildFlags_Borders);
         ImGui::SeparatorText("Configuration");
         ImGui::PushItemWidth(100.f);
 
@@ -109,7 +115,7 @@ void ADMainWindow::showOscilloscope() {
             ImGui::InputInt("Confidence Averaging Length", &tempConf_AveragingLen);
             ImGui::TreePop();
         }
-        
+
         ImGui::EndChild();
 
         // static float arr[] = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
@@ -143,6 +149,5 @@ void ADMainWindow::showOscilloscope() {
         //     sprintf(overlay, "avg %f", average);
         //     ImGui::PlotLines("Lines", values, IM_ARRAYSIZE(values), values_offset, overlay, -1.0f, 1.0f, ImVec2(0, 80.0f));
         // }
-
     }
 }

@@ -8,3 +8,4 @@ build/
 # Top Level Files
 .vscode
 imgui.ini
+compile_commands.json

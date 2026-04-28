@@ -44,7 +44,7 @@ CXXFLAGS = -std=c++17 \
 			 -I$(IMGUI_DIR)/backends \
 			 -I$(MINI_AUDIO_DIR) \
 			 -I$(IMPLOT_DIR) \
-			 -I$(COMP_NN_DIR)
+# 			 -I$(COMP_NN_DIR)
 
 CXXFLAGS += -g -Wall -Wformat -Wextra -msse2 -mavx2
 LIBS = -lm -lfmt -lpthread -ldl -lfftw3f -lhdf5
