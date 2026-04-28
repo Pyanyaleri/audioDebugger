@@ -2,11 +2,11 @@
  *  @name: RoboÉireann Audio Debugger
  *
  *  @author: Shauna Recto
- * 
+ *
  *  @description: The main central file of the program that should have most
  *      if not all the top level functions, with most of the code abstracted in
  *      the rest of the headers and sourch files.
- * 
+ *
  */
 
 /* System Library inclusions */
@@ -34,25 +34,26 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 
-#include "mainWindow.h"
+#include "RE2023_whistleDetector.h"
 #include "adFFT.h"
 #include "audioPlayback.h"
 #include "audioRW.h"
-#include "RE2023_whistleDetector.h"
+#include "mainWindow.h"
 
 #include "tempSettings.h"
 
 static void glfw_error_callback(int, const char*);
-void customTestWindow(ImGuiIO *, bool &, bool &, ImVec4 *);
+void customTestWindow(ImGuiIO*, bool&, bool&, ImVec4*);
 
-int main(int, char**) {
+int main(int, char**)
+{
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         return EXIT_FAILURE;
     }
-        
-    /* GL 3.0 + GLSL 130 */ 
+
+    /* GL 3.0 + GLSL 130 */
     const char* glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -62,7 +63,7 @@ int main(int, char**) {
     if (window == nullptr) {
         return EXIT_FAILURE;
     }
-        
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); /* Enable vsync */
 
@@ -70,18 +71,19 @@ int main(int, char**) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImPlot::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
-    /* Setup Dear ImGui style */ 
+    /* Setup Dear ImGui style */
     ImGui::StyleColorsDark();
 
     /* Setup Platform/Renderer backends */
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    /* Load Fonts */ 
+    /* Load Fonts */
     ImFont* font = io.Fonts->AddFontFromFileTTF(tempConf_FONT_FNAME.c_str(), tempConf_FONT_SIZE);
     IM_ASSERT(font != nullptr);
 
@@ -98,7 +100,7 @@ int main(int, char**) {
 
     while (!glfwWindowShouldClose(window)) {
 
-        /* Poll and handle events (inputs, window resize, etc.) */ 
+        /* Poll and handle events (inputs, window resize, etc.) */
         glfwPollEvents();
 
         // Start the Dear ImGui frame
@@ -135,11 +137,11 @@ int main(int, char**) {
     glfwDestroyWindow(window);
     glfwTerminate();
 
-
     fmt::print("Program Completed!\n");
     return EXIT_SUCCESS;
 }
 
-static void glfw_error_callback(int error, const char* description) {
+static void glfw_error_callback(int error, const char* description)
+{
     fmt::print(stderr, "GLFW Error {}: {}\n", error, description);
 }

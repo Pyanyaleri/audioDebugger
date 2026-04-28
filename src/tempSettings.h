@@ -2,13 +2,13 @@
  * @name: tempSettings.h
  *
  * @author: Shauna Recto
- * 
+ *
  * @description: A temporary measure to create a global (dangerous) to store
  *      data for the program to work. There will be some movement to another
  *      config system (most likely lua or cfg systems).
- * 
+ *
  * @usage: Please make sure that all your configs are prefaced with this style:
- * 
+ *
  *          extern inline const tempConf_<CONSTANT_NAME>;
  *          extern inline tempConf_<VariableName>;
  */
@@ -18,8 +18,8 @@
 
 #include <string>
 
-extern inline const int tempConf_WINDOW_W = 1600;
-extern inline const int tempConf_WINDOW_H = 900;
+extern inline int tempConf_WINDOW_W = 1600;
+extern inline int tempConf_WINDOW_H = 900;
 extern inline const std::string tempConf_PROGRAM_NAME = "RoboÉireann audioDebugger";
 
 extern inline const std::string tempConf_FONT_FNAME = "assets/fonts/JosefinSans-Regular.ttf";
