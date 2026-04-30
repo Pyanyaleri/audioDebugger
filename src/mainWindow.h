@@ -11,6 +11,7 @@
 #include "imgui.h"
 
 #include <string>
+#include <vector>
 
 #ifndef AD_MAIN_WINDOW_H
 #define AD_MAIN_WINDOW_H
@@ -19,13 +20,87 @@ class ADMainWindow {
 private:
     bool isOpen = true;
     ImGuiWindowFlags windowFlags;
+    ImGuiChildFlags childFlags;
 
-    bool bShowAudioTimeline = true;
-    bool bShowOscilloscope = true;
-    bool bShowSpectrogram = true;
-    bool bShowTopMenu = true;
-    bool bShowVideo = true;
-    bool bShowNNOutput = true;
+    ImVec2 currentSize;
+
+    float childHBase;
+    float childWBase;
+
+    class BaseWidget {
+    public:
+        static inline bool enable = true;
+        virtual void show() { }
+        virtual void show(float, float, ImGuiChildFlags) { };
+    };
+
+    class TopMenu : public BaseWidget {
+    public:
+        void show();
+    };
+
+    class AudioTimeline : public BaseWidget {
+    private:
+        std::vector<float> timelineData;
+
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class AudioOscilloscope : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class CameraOutput : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class Configuration : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class EventLog : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class ModelOutput : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    class Spectrogram : public BaseWidget {
+    public:
+        void show(float, float, ImGuiChildFlags) override;
+    };
+
+    struct ScrollingBuffer {
+        int MaxSize;
+        int Offset;
+        ImVector<ImVec2> Data;
+
+        ScrollingBuffer(int max_size = 2000)
+        {
+            MaxSize = max_size;
+            Offset = 0;
+            Data.reserve(MaxSize);
+        }
+
+        void AddPoint(float, float);
+        void Erase();
+    };
+
+    TopMenu tm_instance;
+    AudioTimeline at_instance;
+    AudioOscilloscope ao_instance;
+    CameraOutput camera_instance;
+    Configuration config_instance;
+    EventLog el_instance;
+    ModelOutput mo_instance;
+    Spectrogram spect_instance;
 
 public:
     static inline std::string PROGRAM_NAME = "RoboÉireann audioDebugger";
@@ -34,36 +109,6 @@ public:
     ~ADMainWindow();
 
     void update();
-    void showMenu();
-    void showOscilloscope();
     int parseSettings();
-
-    struct ScrollingBuffer {
-        int MaxSize;
-        int Offset;
-        ImVector<ImVec2> Data;
-        ScrollingBuffer(int max_size = 2000)
-        {
-            MaxSize = max_size;
-            Offset = 0;
-            Data.reserve(MaxSize);
-        }
-        void AddPoint(float x, float y)
-        {
-            if (Data.size() < MaxSize)
-                Data.push_back(ImVec2(x, y));
-            else {
-                Data[Offset] = ImVec2(x, y);
-                Offset = (Offset + 1) % MaxSize;
-            }
-        }
-        void Erase()
-        {
-            if (Data.size() > 0) {
-                Data.shrink(0);
-                Offset = 0;
-            }
-        }
-    };
 };
 #endif /* AD_MAIN_WINDOW_H */
