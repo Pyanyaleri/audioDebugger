@@ -29,7 +29,7 @@ ADMainWindow::ADMainWindow()
     if (bShowTopMenu) {
         windowFlags |= ImGuiWindowFlags_MenuBar;
     }
-    windowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus;
+    windowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground;
 
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->Pos);
@@ -87,10 +87,10 @@ void ADMainWindow::showOscilloscope()
 
         float rowSize = currentSize.y / 5.f;
         float columnSize = currentSize.x;
-        ImGuiChildFlags oscFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
+        ImGuiChildFlags childFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
 
         /* Audio Seeker */ {
-            ImGui::BeginChild("audio_seeker", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("audio_seeker", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Audio Seeker");
             ImGui::EndChild();
         }
@@ -99,14 +99,14 @@ void ADMainWindow::showOscilloscope()
         columnSize = (currentSize.x / 3.f) - 5;
 
         /* Event Log */ {
-            ImGui::BeginChild("event_log", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("event_log", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Event Log");
 
             const std::vector<std::string> tempList = { "01234: Whistle has been detected", "05678: Whistle has been detected", "01234: Whistle has been detected", "05678: Whistle has been detected" };
             static int list_selected_index = 0;
             int item_highlighted_idx = -1; // Here we store our highlighted data as an index.
 
-            if (ImGui::BeginListBox("##event_log_list_box", ImVec2(columnSize - 16, rowSize - 40))) {
+            if (ImGui::BeginListBox("##event_log_list_box", ImGui::GetContentRegionAvail())) {
                 for (int item = 0; item < static_cast<int>(tempList.size()); item++) {
                     bool is_selected = (list_selected_index == item);
                     ImGuiSelectableFlags flags = (item_highlighted_idx == item) ? ImGuiSelectableFlags_Highlight : 0;
@@ -125,7 +125,7 @@ void ADMainWindow::showOscilloscope()
         ImGui::SameLine();
 
         /* Camera Output */ {
-            ImGui::BeginChild("camera_output", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("camera_output", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Camera");
             ImGui::EndChild();
         }
@@ -133,7 +133,7 @@ void ADMainWindow::showOscilloscope()
         ImGui::SameLine();
 
         /* Configuration */ {
-            ImGui::BeginChild("config", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("config", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Configuration");
             ImGui::PushItemWidth(100.f);
 
@@ -163,7 +163,7 @@ void ADMainWindow::showOscilloscope()
         }
 
         /* Mono Audio Oscilloscope */ {
-            ImGui::BeginChild("mono_audio", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("mono_audio", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Mono Audio");
 
             static bool paused = false;
@@ -229,7 +229,7 @@ void ADMainWindow::showOscilloscope()
         ImGui::SameLine();
 
         /* Mono Audio Oscilloscope */ {
-            ImGui::BeginChild("spectrogram", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("spectrogram", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Spectrogram");
             ImGui::EndChild();
         }
@@ -237,7 +237,7 @@ void ADMainWindow::showOscilloscope()
         ImGui::SameLine();
 
         /* Mono Audio Oscilloscope */ {
-            ImGui::BeginChild("model_output", ImVec2(columnSize, rowSize), oscFlags);
+            ImGui::BeginChild("model_output", ImVec2(columnSize, rowSize), childFlags);
             ImGui::SeparatorText("Model Output");
 
             static bool paused = false;
