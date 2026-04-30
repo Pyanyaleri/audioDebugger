@@ -28,16 +28,24 @@ extern inline const float tempConf_FONT_SIZE = 14.0f;
 extern inline const std::string tempConf_audioFile = "assets/audioSamples/shooting_star.flac";
 
 extern inline int tempConf_DetTimeoutMs = 600;
-extern inline float tempConf_WhistleBias = 1.3;
-extern inline float tempConf_WhistleConfidenceThresh = 0.25;
-extern inline float tempConf_UpperWhistleConfidenceThresh = 0.70;
-extern inline int tempConf_AveragingLen = 3;
+extern inline float tempConf_WhistleConfidenceThresh = 0.7;
 
 extern inline int tempConf_FFTSize = 256;
 extern inline int tempConf_FFTStep = 128;
 extern inline int tempConf_NumFFTs = 15;
 
-extern inline float tempConf_AudioGain = 2.7;
-extern inline int tempConf_SamplingRate = 44100;
+extern inline float tempConf_AudioGain = 1;
+extern inline int tempConf_SamplingRate = 16000;
 
 #endif /* TEMP_SETTINGS_H */
+
+/*
+ * whistleDetName = "whistle_model_rc2024.h5";
+ f ftSize = 256; *
+ fftStep = 128;
+ bufferSize = 2048;
+ whistleBias = 0;
+ whistleConfidenceThresh = 0.65;
+ averagingLength = 2;
+ sampleGain = 2;
+ */

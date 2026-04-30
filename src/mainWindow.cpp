@@ -20,6 +20,7 @@
 
 #include <fmt/core.h>
 
+#include <algorithm>
 #include <cmath>
 #include <vector>
 
@@ -41,6 +42,9 @@ ADMainWindow::ADMainWindow()
     el_instance.enable = true;
     mo_instance.enable = true;
     spect_instance.enable = true;
+
+    fmt::print("Generating test audio...\n");
+    at_instance.loadTestAudio();
 }
 
 ADMainWindow::~ADMainWindow() { }
@@ -129,10 +133,61 @@ void ADMainWindow::TopMenu::show(bool* enables[])
 void ADMainWindow::AudioTimeline::show(float sizeW, float sizeH, ImGuiChildFlags flags)
 {
     if (enable) {
-        ImGui::BeginChild("audio_seeker", ImVec2(sizeW, sizeH), flags);
-        ImGui::SeparatorText("Audio Seeker");
+        ImGui::BeginChild("audio_timeline", ImVec2(sizeW, sizeH), flags);
+        ImGui::SeparatorText("Audio Timeline");
+
+        ImPlotFlags plotFlags = ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoInputs;
+        if (ImPlot::BeginPlot("##plot_timeline", ImGui::GetContentRegionAvail(), plotFlags)) {
+            ImPlot::SetupAxisLimits(ImAxis_X1, 0, 30);
+            ImPlot::SetupAxisLimits(ImAxis_Y1, -1, 1);
+            ImPlot::PlotShaded("##audio_coords", plotTimes.data(), plotMins.data(), plotMaxs.data(), plotTimes.size());
+        }
+
+        ImPlot::EndPlot();
         ImGui::EndChild();
     }
+}
+
+void ADMainWindow::AudioTimeline::loadTestAudio()
+{
+    if (enable) {
+        int SAMPLE_RATE = 16000;
+        int SAMPLE_LENGTH = 30; /* In seconds */
+        int TOTAL_SAMPLES = 2000;
+
+        float timestampLength = (SAMPLE_LENGTH * 1.f) / SAMPLE_RATE;
+        int totalAudioSamples = SAMPLE_RATE * SAMPLE_LENGTH;
+
+        for (int timelineInd = 0; timelineInd < totalAudioSamples; timelineInd++) {
+            float tCoord = timestampLength * timelineInd;
+            timelineData.push_back(ImVec2(tCoord, (sinf(tCoord) + sinf(2 * tCoord)) / 2));
+        }
+
+        int plottingRatio = static_cast<int>(totalAudioSamples / TOTAL_SAMPLES);
+
+        for (int plottingStep = 0; plottingStep < totalAudioSamples; plottingStep += plottingRatio) {
+            float time = (plottingStep * 1.f) / SAMPLE_RATE;
+            ImVec2* chunkStart = timelineData.begin() + plottingStep;
+            ImVec2* chunkEnd = chunkStart + plottingRatio;
+
+            float min = (*std::min_element(
+                             chunkStart, chunkEnd, [](ImVec2& vec1, ImVec2& vec2) {
+                                 return vec1.y < vec2.y;
+                             }))
+                            .y;
+            float max = (*std::max_element(
+                             chunkStart, chunkEnd, [](ImVec2& vec1, ImVec2& vec2) {
+                                 return vec1.y < vec2.y;
+                             }))
+                            .y;
+
+            plotTimes.push_back(time);
+            plotMins.push_back(min);
+            plotMaxs.push_back(max);
+        }
+    }
+
+    fileLoaded = true;
 }
 
 void ADMainWindow::AudioOscilloscope::show(float sizeW, float sizeH, ImGuiChildFlags flags)
@@ -218,27 +273,20 @@ void ADMainWindow::Configuration::show(float sizeW, float sizeH, ImGuiChildFlags
         ImGui::SeparatorText("Configuration");
         ImGui::PushItemWidth(100.f);
 
-        if (ImGui::TreeNode("Audio")) {
-            ImGui::InputFloat("Mono Audio Gain", &tempConf_AudioGain);
-            ImGui::InputInt("Sampling Rate (Hz)", &tempConf_SamplingRate);
-            ImGui::TreePop();
-        }
+        ImGui::SeparatorText("Audio File Information");
+        ImGui::InputInt("Sampling Rate (Hz)", &tempConf_SamplingRate);
 
-        if (ImGui::TreeNode("Spectrogram")) {
-            ImGui::InputInt("FFT Size", &tempConf_FFTSize);
-            ImGui::InputInt("FFT Step", &tempConf_FFTStep);
-            ImGui::InputInt("Number of FFTs", &tempConf_NumFFTs);
-            ImGui::TreePop();
-        }
+        ImGui::SeparatorText("Audio Manipulation");
+        ImGui::InputFloat("Audio Gain", &tempConf_AudioGain);
 
-        if (ImGui::TreeNode("Whistle Detector")) {
-            ImGui::InputInt("Detection Timeout (ms)", &tempConf_DetTimeoutMs);
-            ImGui::InputFloat("Whistle Bias", &tempConf_WhistleBias);
-            ImGui::InputFloat("Lower Whistle Confidence Threshold", &tempConf_WhistleConfidenceThresh);
-            ImGui::InputFloat("Upper Whistle Confidence Threshold", &tempConf_UpperWhistleConfidenceThresh);
-            ImGui::InputInt("Confidence Averaging Length", &tempConf_AveragingLen);
-            ImGui::TreePop();
-        }
+        ImGui::SeparatorText("Spectrogram Information");
+        ImGui::InputInt("FFT Size", &tempConf_FFTSize);
+        ImGui::InputInt("FFT Step", &tempConf_FFTStep);
+        ImGui::InputInt("Number of FFTs", &tempConf_NumFFTs);
+
+        ImGui::SeparatorText("Whistle Detector Information");
+        ImGui::InputInt("Detection Delay (ms)", &tempConf_DetTimeoutMs);
+        ImGui::InputFloat("Whistle Confidence Threshold", &tempConf_WhistleConfidenceThresh);
 
         ImGui::EndChild();
     }

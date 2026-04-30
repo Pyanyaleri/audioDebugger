@@ -9,6 +9,7 @@
  */
 
 #include "imgui.h"
+#include "implot.h"
 
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ private:
     public:
         bool enable;
         virtual void show(bool*[]) { }
-        virtual void show(float, float, ImGuiChildFlags) { };
+        virtual void show(float, float, ImGuiChildFlags) { }
     };
 
     class TopMenu : public BaseWidget {
@@ -51,10 +52,15 @@ private:
 
     class AudioTimeline : public BaseWidget {
     private:
-        std::vector<float> timelineData;
+        ImVector<ImVec2> timelineData;
+        std::vector<float> plotTimes, plotMins, plotMaxs;
+
+        ImPlotSpec visualSpec;
+        bool fileLoaded = false;
 
     public:
         void show(float, float, ImGuiChildFlags) override;
+        void loadTestAudio();
     };
 
     class AudioOscilloscope : public BaseWidget {
