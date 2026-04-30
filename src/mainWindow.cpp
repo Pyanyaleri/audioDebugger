@@ -13,9 +13,13 @@
 
 #include "mainWindow.h"
 #include "imgui.h"
+#include "implot.h"
+#include "implot_internal.h"
 #include "tempSettings.h"
-#include <cmath>
+
 #include <fmt/core.h>
+
+#include <cmath>
 #include <vector>
 
 ADMainWindow::ADMainWindow()
@@ -161,6 +165,64 @@ void ADMainWindow::showOscilloscope()
         /* Mono Audio Oscilloscope */ {
             ImGui::BeginChild("mono_audio", ImVec2(columnSize, rowSize), oscFlags);
             ImGui::SeparatorText("Mono Audio");
+
+            static bool paused = false;
+            static ScrollingBuffer dataDigital[3];
+            static ScrollingBuffer dataAnalog[2];
+            static bool showDigital[3] = { true, false, false };
+            static bool showAnalog[2] = { true, false };
+
+            char label[32];
+            ImGui::Checkbox("Pause", &paused);
+            ImGui::Checkbox("digital_0", &showDigital[0]);
+            ImGui::SameLine();
+            ImGui::Checkbox("digital_1", &showDigital[1]);
+            ImGui::SameLine();
+            ImGui::Checkbox("digital_2", &showDigital[2]);
+            ImGui::SameLine();
+            ImGui::Checkbox("analog_0", &showAnalog[0]);
+            ImGui::SameLine();
+            ImGui::Checkbox("analog_1", &showAnalog[1]);
+
+            static float t = 0, last_t = 0;
+            if (!paused) {
+                t += ImGui::GetIO().DeltaTime;
+                if (t - last_t >= 0.01f) {
+                    last_t = t;
+                    // Digital signal values
+                    if (showDigital[0])
+                        dataDigital[0].AddPoint(t, sinf(2 * t) > 0.45);
+                    if (showDigital[1])
+                        dataDigital[1].AddPoint(t, sinf(2 * t) < 0.45);
+                    if (showDigital[2])
+                        dataDigital[2].AddPoint(t, sinf(50 * t) > 0.5);
+                    // Analog signal values
+                    if (showAnalog[0])
+                        dataAnalog[0].AddPoint(t, sinf(2 * t));
+                    if (showAnalog[1])
+                        dataAnalog[1].AddPoint(t, cosf(2 * t));
+                }
+            }
+            if (ImPlot::BeginPlot("##plot_mono_audio", ImGui::GetContentRegionAvail())) {
+                ImPlot::SetupAxisLimits(ImAxis_X1, t - 10.0, t, paused ? ImGuiCond_Once : ImGuiCond_Always);
+                ImPlot::SetupAxisLimits(ImAxis_Y1, -1, 1);
+                for (int i = 0; i < 3; ++i) {
+                    if (showDigital[i] && dataDigital[i].Data.size() > 0) {
+                        snprintf(label, sizeof(label), "digital_%d", i);
+                        ImPlot::PlotDigital(label, &dataDigital[i].Data[0].x, &dataDigital[i].Data[0].y, dataDigital[i].Data.size(), { ImPlotProp_Offset, dataDigital[i].Offset, ImPlotProp_Stride, 2 * sizeof(float), ImPlotProp_Size, (i + 1) * 4 });
+                    }
+                }
+                for (int i = 0; i < 2; ++i) {
+                    if (showAnalog[i]) {
+                        snprintf(label, sizeof(label), "analog_%d", i);
+                        if (dataAnalog[i].Data.size() > 0) {
+                            ImPlot::PlotLine(label, &dataAnalog[i].Data[0].x, &dataAnalog[i].Data[0].y, dataAnalog[i].Data.size(), { ImPlotProp_Offset, dataAnalog[i].Offset, ImPlotProp_Stride, 2 * sizeof(float) });
+                        }
+                    }
+                }
+                ImPlot::EndPlot();
+            }
+
             ImGui::EndChild();
         }
 
@@ -177,39 +239,65 @@ void ADMainWindow::showOscilloscope()
         /* Mono Audio Oscilloscope */ {
             ImGui::BeginChild("model_output", ImVec2(columnSize, rowSize), oscFlags);
             ImGui::SeparatorText("Model Output");
+
+            static bool paused = false;
+            static ScrollingBuffer dataDigital[3];
+            static ScrollingBuffer dataAnalog[2];
+            static bool showDigital[3] = { true, false, false };
+            static bool showAnalog[2] = { true, false };
+
+            char label[32];
+            ImGui::Checkbox("Pause", &paused);
+            ImGui::Checkbox("digital_0", &showDigital[0]);
+            ImGui::SameLine();
+            ImGui::Checkbox("digital_1", &showDigital[1]);
+            ImGui::SameLine();
+            ImGui::Checkbox("digital_2", &showDigital[2]);
+            ImGui::SameLine();
+            ImGui::Checkbox("analog_0", &showAnalog[0]);
+            ImGui::SameLine();
+            ImGui::Checkbox("analog_1", &showAnalog[1]);
+
+            static float t = 0, last_t = 0;
+            if (!paused) {
+                t += ImGui::GetIO().DeltaTime;
+                if (t - last_t >= 0.01f) {
+                    last_t = t;
+                    // Digital signal values
+                    if (showDigital[0])
+                        dataDigital[0].AddPoint(t, sinf(2 * t) > 0.45);
+                    if (showDigital[1])
+                        dataDigital[1].AddPoint(t, sinf(2 * t) < 0.45);
+                    if (showDigital[2])
+                        dataDigital[2].AddPoint(t, sinf(50 * t) > 0.5);
+                    // Analog signal values
+                    if (showAnalog[0])
+                        dataAnalog[0].AddPoint(t, sinf(2 * t));
+                    if (showAnalog[1])
+                        dataAnalog[1].AddPoint(t, cosf(2 * t));
+                }
+            }
+            if (ImPlot::BeginPlot("##Digital", ImGui::GetContentRegionAvail())) {
+                ImPlot::SetupAxisLimits(ImAxis_X1, t - 10.0, t, paused ? ImGuiCond_Once : ImGuiCond_Always);
+                ImPlot::SetupAxisLimits(ImAxis_Y1, -1, 1);
+                for (int i = 0; i < 3; ++i) {
+                    if (showDigital[i] && dataDigital[i].Data.size() > 0) {
+                        snprintf(label, sizeof(label), "digital_%d", i);
+                        ImPlot::PlotDigital(label, &dataDigital[i].Data[0].x, &dataDigital[i].Data[0].y, dataDigital[i].Data.size(), { ImPlotProp_Offset, dataDigital[i].Offset, ImPlotProp_Stride, 2 * sizeof(float), ImPlotProp_Size, (i + 1) * 4 });
+                    }
+                }
+                for (int i = 0; i < 2; ++i) {
+                    if (showAnalog[i]) {
+                        snprintf(label, sizeof(label), "analog_%d", i);
+                        if (dataAnalog[i].Data.size() > 0) {
+                            ImPlot::PlotLine(label, &dataAnalog[i].Data[0].x, &dataAnalog[i].Data[0].y, dataAnalog[i].Data.size(), { ImPlotProp_Offset, dataAnalog[i].Offset, ImPlotProp_Stride, 2 * sizeof(float) });
+                        }
+                    }
+                }
+                ImPlot::EndPlot();
+            }
+
             ImGui::EndChild();
         }
-
-        // static float arr[] = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
-        // ImGui::PlotLines("Frame Times", arr, IM_ARRAYSIZE(arr));
-
-        // // Fill an array of contiguous float values to plot
-        // // Tip: If your float aren't contiguous but part of a structure, you can pass a pointer to your first float
-        // // and the sizeof() of your structure in the "stride" parameter.
-        // static float values[90] = {};
-        // static int values_offset = 0;
-        // static double refresh_time = 0.0;
-        // if (!animate || refresh_time == 0.0)
-        //     refresh_time = ImGui::GetTime();
-        // while (refresh_time < ImGui::GetTime()) // Create data at fixed 60 Hz rate for the demo
-        // {
-        //     static float phase = 0.0f;
-        //     values[values_offset] = cosf(phase);
-        //     values_offset = (values_offset + 1) % IM_ARRAYSIZE(values);
-        //     phase += 0.10f * values_offset;
-        //     refresh_time += 1.0f / 60.0f;
-        // }
-
-        // // Plots can display overlay texts
-        // // (in this example, we will display an average value)
-        // {
-        //     float average = 0.0f;
-        //     for (int n = 0; n < IM_ARRAYSIZE(values); n++)
-        //         average += values[n];
-        //     average /= (float)IM_ARRAYSIZE(values);
-        //     char overlay[32];
-        //     sprintf(overlay, "avg %f", average);
-        //     ImGui::PlotLines("Lines", values, IM_ARRAYSIZE(values), values_offset, overlay, -1.0f, 1.0f, ImVec2(0, 80.0f));
-        // }
     }
 }

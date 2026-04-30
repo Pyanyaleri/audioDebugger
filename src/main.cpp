@@ -18,7 +18,6 @@
 #include <fftw3.h>
 
 /* Standard Library inclusions */
-#include <cmath>
 #include <cstdlib>
 #include <string>
 
@@ -111,6 +110,7 @@ int main(int, char**)
         /* Demo Window*/
         if (show_demo_window) {
             ImGui::ShowDemoWindow(&show_demo_window);
+            ImPlot::ShowDemoWindow(&show_demo_window);
         }
 
         /* Main Window */

@@ -1,4 +1,4 @@
-EXE = audioDebuggerIMGUI
+EXE = audioDebugger
 CXX = g++
 
 # Dir definitions
@@ -46,7 +46,7 @@ CXXFLAGS = -std=c++17 \
 			 -I$(IMPLOT_DIR) \
 # 			 -I$(COMP_NN_DIR)
 
-CXXFLAGS += -g -Wall -Wformat -Wextra -msse2 -mavx2
+CXXFLAGS += -g -Wall -Wformat -Wextra -msse2 -mavx2 -O3
 LIBS = -lm -lfmt -lpthread -ldl -lfftw3f -lhdf5
 LIBS += $(LINUX_GL_LIBS) `pkg-config --static --libs glfw3 protobuf`
 LIBS += -L$(COMP_NN_DIR) -l:libCompiledNN.a
