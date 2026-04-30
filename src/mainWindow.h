@@ -24,19 +24,29 @@ private:
 
     ImVec2 currentSize;
 
+    enum WIDGET_INDEX {
+        AUDIO_TIMELINE = 0,
+        AUDIO_OSCILLOSCOPE,
+        CAMERA_OUTPUT,
+        CONFIGURATION,
+        EVENT_LOG,
+        MODEL_OUTPUT,
+        SPECTROGRAM,
+    };
+
     float childHBase;
     float childWBase;
 
     class BaseWidget {
     public:
-        static inline bool enable = true;
-        virtual void show() { }
+        bool enable;
+        virtual void show(bool*[]) { }
         virtual void show(float, float, ImGuiChildFlags) { };
     };
 
     class TopMenu : public BaseWidget {
     public:
-        void show();
+        void show(bool*[]);
     };
 
     class AudioTimeline : public BaseWidget {
