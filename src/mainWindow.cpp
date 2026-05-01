@@ -16,7 +16,7 @@
 #include "imgui.h"
 #include "implot.h"
 #include "implot_internal.h"
-#include "tempSettings.h"
+#include "luaConfig.h"
 
 #include <fmt/core.h>
 
@@ -57,7 +57,7 @@ void ADMainWindow::update()
     ImGui::SetNextWindowSize(windowIO.DisplaySize);
 
     /* Enable the window widgets */
-    ImGui::Begin(PROGRAM_NAME.c_str(), &isOpen, windowFlags);
+    ImGui::Begin(programSettings.program_name.c_str(), &isOpen, windowFlags);
 
     /* Obtain the program size */
     currentSize = ImGui::GetContentRegionAvail();
@@ -274,19 +274,19 @@ void ADMainWindow::Configuration::show(float sizeW, float sizeH, ImGuiChildFlags
         ImGui::PushItemWidth(100.f);
 
         ImGui::SeparatorText("Audio File Information");
-        ImGui::InputInt("Sampling Rate (Hz)", &tempConf_SamplingRate);
+        ImGui::InputInt("Sampling Rate (Hz)", &programSettings.sampling_rate);
 
         ImGui::SeparatorText("Audio Manipulation");
-        ImGui::InputFloat("Audio Gain", &tempConf_AudioGain);
+        ImGui::InputFloat("Audio Gain", &programSettings.audio_gain);
 
         ImGui::SeparatorText("Spectrogram Information");
-        ImGui::InputInt("FFT Size", &tempConf_FFTSize);
-        ImGui::InputInt("FFT Step", &tempConf_FFTStep);
-        ImGui::InputInt("Number of FFTs", &tempConf_NumFFTs);
+        ImGui::InputInt("Buffer Size", &programSettings.buffer_size);
+        ImGui::InputInt("FFT Size", &programSettings.fft_size);
+        ImGui::InputInt("FFT Step", &programSettings.fft_step);
 
         ImGui::SeparatorText("Whistle Detector Information");
-        ImGui::InputInt("Detection Delay (ms)", &tempConf_DetTimeoutMs);
-        ImGui::InputFloat("Whistle Confidence Threshold", &tempConf_WhistleConfidenceThresh);
+        ImGui::InputInt("Detection Delay (ms)", &programSettings.detection_delay_ms);
+        ImGui::InputFloat("Whistle Confidence Threshold", &programSettings.whistle_confidence_thresh);
 
         ImGui::EndChild();
     }

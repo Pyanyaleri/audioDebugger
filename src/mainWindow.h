@@ -11,7 +11,6 @@
 #include "imgui.h"
 #include "implot.h"
 
-#include <string>
 #include <vector>
 
 #ifndef AD_MAIN_WINDOW_H
@@ -119,8 +118,6 @@ private:
     Spectrogram spect_instance;
 
 public:
-    static inline std::string PROGRAM_NAME = "RoboÉireann audioDebugger";
-
     ADMainWindow();
     ~ADMainWindow();
 

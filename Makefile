@@ -16,6 +16,7 @@ SOURCES =   $(SOURCE_DIR)/main.cpp \
 			$(SOURCE_DIR)/adFFT.cpp \
 			$(SOURCE_DIR)/audioPlayback.cpp \
 			$(SOURCE_DIR)/audioRW.cpp \
+			$(SOURCE_DIR)/luaConfig.cpp \
 			$(SOURCE_DIR)/RE2023_whistleDetector.cpp \
 
 # IMGUI Dependencies
@@ -49,7 +50,7 @@ CXXFLAGS = -std=c++17 \
 # 			 -I$(COMP_NN_DIR)
 
 CXXFLAGS += -g -Wall -Wformat -Wextra -msse2 -mavx2
-LIBS = -lm -lfmt -lpthread -ldl -lfftw3f -lhdf5
+LIBS = -lm -lfmt -lpthread -ldl -lfftw3f -lhdf5 -llua
 LIBS += $(LINUX_GL_LIBS) `pkg-config --static --libs glfw3 protobuf`
 LIBS += -L$(COMP_NN_DIR) -l:libCompiledNN.a
 

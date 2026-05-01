@@ -15,7 +15,12 @@
 
 #include <fmt/core.h>
 
+extern "C" {
 #include <fftw3.h>
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+}
 
 /* Standard Library inclusions */
 #include <cstdlib>
@@ -41,9 +46,8 @@
 #include "adFFT.h"
 #include "audioPlayback.h"
 #include "audioRW.h"
+#include "luaConfig.h"
 #include "mainWindow.h"
-
-#include "tempSettings.h"
 
 static void glfw_error_callback(int, const char*);
 void customTestWindow(ImGuiIO*, bool&, bool&, ImVec4*);
@@ -52,6 +56,9 @@ bool LoadTextureFromMemory(const void*, size_t, GLuint*, int*, int*);
 
 int main(int, char**)
 {
+    /* Initializing Lua enviroment */
+    LuaConfig luaConfigInstance("settings.lua");
+    luaConfigInstance.loadConfigFile();
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
@@ -64,7 +71,7 @@ int main(int, char**)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     /* Create window with graphics context */
-    GLFWwindow* window = glfwCreateWindow(tempConf_WINDOW_W, tempConf_WINDOW_H, tempConf_PROGRAM_NAME.c_str(), nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(programSettings.window_w, programSettings.window_h, programSettings.program_name.c_str(), nullptr, nullptr);
     if (window == nullptr) {
         return EXIT_FAILURE;
     }
@@ -89,7 +96,7 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     /* Load Fonts */
-    ImFont* font = io.Fonts->AddFontFromFileTTF(tempConf_FONT_FNAME.c_str(), tempConf_FONT_SIZE);
+    ImFont* font = io.Fonts->AddFontFromFileTTF(programSettings.font.c_str(), programSettings.font_size);
     IM_ASSERT(font != nullptr);
 
     /* Test image loading */
@@ -105,10 +112,6 @@ int main(int, char**)
 
     fmt::print("Opening windows...\n");
     ADMainWindow mainWindowOBj;
-
-    // ADAudioPlayback testMusic(tempConf_audioFile.c_str());
-
-    // testMusic.playAudio();
 
     while (!glfwWindowShouldClose(window)) {
 
