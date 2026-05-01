@@ -3,8 +3,8 @@ audioDebugger is a audio analysis tool developed for debugging audio related
 code used in RoboCup. If the tool is to be used by other teams, this project
 should be considered as a contribution by the RoboÉireann team.
 
-> :warning: Please note that that this is a WIP! It is currently not capable of analysis
-just yet (as of 11/11/2023). It is currently in a phase of feature and backend implementation.
+> [!WARNING]
+> Please note that that this is a WIP! It is currently not capable of analysis just yet (as of 1/5/2026). It is currently in a phase of feature and backend implementation.
 
 # Motivation
 As more and more developments in the RoboCup rules are trying to eliminate dependence on wireless forms of communication to each robot and by the Game Controller, audio is one of the next areas of development by teams, especially through Whistle Detectors and encoded signals through audio transmission. This tool aims to conveniently provide utility in analyzing obtained audio data.
@@ -19,25 +19,22 @@ will not have proper means to debug outside of Arch.
 The machine I use to compile the project is as follows:
 - Arch Linux
 - Plasma (Wayland)
-- fmt library from the [AUR](https://aur.archlinux.org/packages/fmt-git)
 - Audio provided by PipeWire (`pipewire, pipewire-pulse, pipewire-jack, wireplumber`)
 
 Included dependencies located in `lib/` are:
 - [Dear ImGUI](https://github.com/ocornut/imgui) - For the Graphics UI.
 - [ImPlots](https://github.com/epezent/implot) - For expanded plotting data.
-- [FFTW3](https://fftw.org/) - FFT library. Can be replaced with [kissfft](https://github.com/mborgerding/kissfft).
+- [FFTW3](https://fftw.org/) - FFT library.
 - [miniaudio](https://github.com/mackron/miniaudio) - For audio parsing and playback.
-- [CompiledNN](https://github.com/bhuman/CompiledNN) - For NN implementation.
-  Can be replaced with TFLite
-  - NOTE: This one has been compiled by me. Recompile if necessary.
-  - If you do this, then it is recommended to include from `/usr/local/lib/`.
+- [stb Image Header](https://github.com/nothings/stb/blob/master/stb_image.h) - For image rendering.
+- ~~[CompiledNN](https://github.com/bhuman/CompiledNN)~~ Currently under review as is currently being deprecated.
 
 The project also depends on system libraries as these are harder to incorporate
 into the system itself. You can install them via Pacman (or any other package
 manager but the names will be different):
 
 ```bash
-# pacman -S base-devel fftw glfw-wayland fmt alsa-lib hdf5-mpi protobuf
+# pacman -S base-devel fftw glfw fmt alsa-lib protobuf
 ```
 
 # Building
