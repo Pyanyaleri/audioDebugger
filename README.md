@@ -34,7 +34,7 @@ into the system itself. You can install them via Pacman (or any other package
 manager but the names will be different):
 
 ```bash
-# pacman -S base-devel fftw glfw fmt alsa-lib protobuf
+# pacman -S base-devel alsa-lib fftw fmt glfw lua protobuf
 ```
 
 # Building
