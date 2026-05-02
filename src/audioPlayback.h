@@ -26,7 +26,7 @@ private:
     ma_device device;
 
 public:
-    ADAudioPlayback();
+    ADAudioPlayback() = default;
     ADAudioPlayback(std::string);
     ~ADAudioPlayback();
 

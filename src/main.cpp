@@ -57,6 +57,9 @@ int main(int, char**)
     LuaConfig luaConfigInstance("settings.lua");
     luaConfigInstance.loadConfigFile();
 
+    ADAudioPlayback testAudio(programSettings.test_audio_filename);
+    testAudio.playAudio();
+
     /* Initializing GLFW Infrastructure */
     GLFW_Config glfwConfig;
 

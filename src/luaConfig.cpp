@@ -46,7 +46,7 @@ bool LuaConfig::loadConfigFile()
     programSettings.font_size = lua_isnumber(state, -1) ? lua_tonumber(state, -1) : 11;
     lua_pop(state, 1);
 
-    lua_getglobal(state, "test_audio_filename");
+    lua_getglobal(state, "test_audio_file");
     programSettings.test_audio_filename = lua_isstring(state, -1) ? lua_tostring(state, -1) : "";
     lua_pop(state, 1);
 
