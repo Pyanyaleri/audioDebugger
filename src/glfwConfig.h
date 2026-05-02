@@ -15,20 +15,20 @@
 
 class GLFW_Config {
 
-private:
-    GLFWwindow* window;
-    const char* glsl_version;
+  private:
+	GLFWwindow *window;
+	const char *glsl_version;
 
-public:
-    GLFW_Config();
-    ~GLFW_Config();
+  public:
+	GLFW_Config();
+	~GLFW_Config();
 
-    GLFWwindow* getWindow();
-    const char* getGLSLVersion();
+	GLFWwindow *getWindow();
+	const char *getGLSLVersion();
 
-    static void glfw_error_callback(int, const char*);
+	static void glfw_error_callback(int, const char *);
 
-    bool windowShouldClose();
+	bool windowShouldClose();
 };
 
 #endif

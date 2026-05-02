@@ -14,8 +14,8 @@ COMP_NN_DIR = lib/CompiledNN
 SOURCES =   $(SOURCE_DIR)/main.cpp \
 			$(SOURCE_DIR)/mainWindow.cpp \
 			$(SOURCE_DIR)/adFFT.cpp \
-			$(SOURCE_DIR)/audioPlayback.cpp \
-			$(SOURCE_DIR)/audioRW.cpp \
+			$(SOURCE_DIR)/audioProvider.cpp \
+			$(SOURCE_DIR)/fileIO.cpp \
 			$(SOURCE_DIR)/glfwConfig.cpp \
 			$(SOURCE_DIR)/luaConfig.cpp \
 			$(SOURCE_DIR)/RE2023_whistleDetector.cpp \
@@ -52,10 +52,10 @@ CXXFLAGS = -std=c++17 \
 
 CXXFLAGS += -g -Wall -Wformat -Wextra -msse2 -mavx2
 LIBS = -lm -lfmt -lpthread -ldl -lfftw3f -lhdf5 -llua
-LIBS += $(LINUX_GL_LIBS) `pkg-config --static --libs glfw3 protobuf`
+LIBS += $(LINUX_GL_LIBS) `pkg-config --static --libs glfw3 protobuf gio-2.0 libportal`
 LIBS += -L$(COMP_NN_DIR) -l:libCompiledNN.a
 
-CXXFLAGS += `pkg-config --cflags glfw3`
+CXXFLAGS += `pkg-config --cflags glfw3 gio-2.0 libportal`
 CFLAGS = $(CXXFLAGS)
 
 # For project source files

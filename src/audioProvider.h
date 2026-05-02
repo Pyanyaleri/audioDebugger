@@ -19,24 +19,24 @@
 #include <string>
 
 class AudioProvider {
-private:
-    ma_result result;
-    ma_decoder decoder;
-    ma_device_config deviceConfig;
-    ma_device device;
+  private:
+	ma_result result;
+	ma_decoder decoder;
+	ma_device_config deviceConfig;
+	ma_device device;
 
-    bool play;
-    bool deviceInitialized;
+	bool play;
+	bool deviceInitialized;
 
-public:
-    AudioProvider();
-    AudioProvider(std::string);
-    ~AudioProvider();
+  public:
+	AudioProvider();
+	AudioProvider(std::string);
+	~AudioProvider();
 
-    static void dataCallback(ma_device*, void*, const void*, ma_uint32);
-    void loadAudioFile(std::string);
-    void playAudio();
-    void pauseAudio();
+	static void dataCallback(ma_device *, void *, const void *, ma_uint32);
+	void loadAudioFile(std::string);
+	void playAudio();
+	void pauseAudio();
 };
 
 #endif /* AD_AUDIO_H */

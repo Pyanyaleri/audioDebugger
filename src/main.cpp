@@ -42,147 +42,158 @@ extern "C" {
 #include "RE2023_whistleDetector.h"
 #include "adFFT.h"
 #include "audioProvider.h"
+#include "fileIO.h"
 #include "glfwConfig.h"
 #include "luaConfig.h"
 #include "mainWindow.h"
 
-void customTestWindow(ImGuiIO*, bool&, bool&, ImVec4*);
-bool LoadTextureFromFile(const char*, GLuint*, int*, int*);
-bool LoadTextureFromMemory(const void*, size_t, GLuint*, int*, int*);
+void customTestWindow(ImGuiIO *, bool &, bool &, ImVec4 *);
+bool LoadTextureFromFile(const char *, GLuint *, int *, int *);
+bool LoadTextureFromMemory(const void *, size_t, GLuint *, int *, int *);
 
-int main(int, char**)
-{
-    /* Initializing Lua enviroment */
-    LuaConfig luaConfigInstance("settings.lua");
-    luaConfigInstance.loadConfigFile();
+int main(int, char **) {
+	/* Initializing Lua enviroment */
+	LuaConfig luaConfigInstance("settings.lua");
+	luaConfigInstance.loadConfigFile();
 
-    AudioProvider audioProvider;
-    audioProvider.loadAudioFile(programSettings.test_audio_filename);
-    // testAudio.playAudio();
+	AudioProvider audioProvider;
+	audioProvider.loadAudioFile(programSettings.test_audio_filename);
+	// testAudio.playAudio();
 
-    /* Initializing GLFW Infrastructure */
-    GLFW_Config glfwConfig;
+	/* Initializing GLFW Infrastructure */
+	GLFW_Config glfwConfig;
 
-    /* Setup Dear ImGui context */
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImPlot::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+	/* Setup Dear ImGui context */
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImPlot::CreateContext();
+	ImGuiIO &io = ImGui::GetIO();
+	(void)io;
+	io.ConfigFlags |=
+		ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	io.ConfigFlags |=
+		ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
-    /* Setup Dear ImGui style */
-    ImGui::StyleColorsDark();
+	/* Setup Dear ImGui style */
+	ImGui::StyleColorsDark();
 
-    /* Setup Platform/Renderer backends */
-    ImGui_ImplGlfw_InitForOpenGL(glfwConfig.getWindow(), true);
-    ImGui_ImplOpenGL3_Init(glfwConfig.getGLSLVersion());
+	/* Setup Platform/Renderer backends */
+	ImGui_ImplGlfw_InitForOpenGL(glfwConfig.getWindow(), true);
+	ImGui_ImplOpenGL3_Init(glfwConfig.getGLSLVersion());
 
-    /* Load Fonts */
-    ImFont* font = io.Fonts->AddFontFromFileTTF(programSettings.font.c_str(), programSettings.font_size);
-    IM_ASSERT(font != nullptr);
+	/* Load Fonts */
+	ImFont *font = io.Fonts->AddFontFromFileTTF(programSettings.font.c_str(),
+												programSettings.font_size);
+	IM_ASSERT(font != nullptr);
 
-    /* Test image loading */
-    int my_image_width = 0;
-    int my_image_height = 0;
-    GLuint my_image_texture = 0;
-    bool ret = LoadTextureFromFile("assets/test.jpg", &my_image_texture, &my_image_width, &my_image_height);
-    IM_ASSERT(ret);
+	/* Test image loading */
+	int my_image_width = 0;
+	int my_image_height = 0;
+	GLuint my_image_texture = 0;
+	bool ret = LoadTextureFromFile("assets/test.jpg", &my_image_texture,
+								   &my_image_width, &my_image_height);
+	IM_ASSERT(ret);
 
-    /* Our state */
-    bool show_demo_window = true;
-    ImVec4 clear_color = ImVec4(0.063f, 0.082f, 0.102f, 1.0f);
+	/* Our state */
+	bool show_demo_window = true;
+	ImVec4 clear_color = ImVec4(0.063f, 0.082f, 0.102f, 1.0f);
 
-    fmt::print("Opening windows...\n");
-    ADMainWindow mainWindowOBj;
+	fmt::print("Opening windows...\n");
+	ADMainWindow mainWindowOBj;
 
-    while (!glfwConfig.windowShouldClose()) {
+	while (!glfwConfig.windowShouldClose()) {
 
-        /* Poll and handle events (inputs, window resize, etc.) */
-        glfwPollEvents();
+		/* Poll and handle events (inputs, window resize, etc.) */
+		glfwPollEvents();
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-        /* Demo Window*/
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-            ImPlot::ShowDemoWindow(&show_demo_window);
-        }
+		/* Demo Window*/
+		if (show_demo_window) {
+			ImGui::ShowDemoWindow(&show_demo_window);
+			ImPlot::ShowDemoWindow(&show_demo_window);
+		}
 
-        /* Main Window */
-        mainWindowOBj.update();
+		/* Main Window */
+		mainWindowOBj.update();
 
-        // Rendering
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(glfwConfig.getWindow(), &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(glfwConfig.getWindow(), &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClearColor(clear_color.x * clear_color.w,
+					 clear_color.y * clear_color.w,
+					 clear_color.z * clear_color.w, clear_color.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(glfwConfig.getWindow());
-    }
+		glfwSwapBuffers(glfwConfig.getWindow());
+	}
 
-    /* Cleanup */
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    ImPlot::DestroyContext();
+	/* Cleanup */
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	ImPlot::DestroyContext();
 
-    fmt::print("Program Completed!\n");
-    return EXIT_SUCCESS;
+	fmt::print("Program Completed!\n");
+	return EXIT_SUCCESS;
 }
 
-bool LoadTextureFromMemory(const void* data, size_t data_size, GLuint* out_texture, int* out_width, int* out_height)
-{
-    // Load from file
-    int image_width = 0;
-    int image_height = 0;
-    unsigned char* image_data = stbi_load_from_memory((const unsigned char*)data, (int)data_size, &image_width, &image_height, NULL, 4);
-    if (image_data == NULL)
-        return false;
+bool LoadTextureFromMemory(const void *data, size_t data_size,
+						   GLuint *out_texture, int *out_width,
+						   int *out_height) {
+	// Load from file
+	int image_width = 0;
+	int image_height = 0;
+	unsigned char *image_data =
+		stbi_load_from_memory((const unsigned char *)data, (int)data_size,
+							  &image_width, &image_height, NULL, 4);
+	if (image_data == NULL)
+		return false;
 
-    // Create a OpenGL texture identifier
-    GLuint image_texture;
-    glGenTextures(1, &image_texture);
-    glBindTexture(GL_TEXTURE_2D, image_texture);
+	// Create a OpenGL texture identifier
+	GLuint image_texture;
+	glGenTextures(1, &image_texture);
+	glBindTexture(GL_TEXTURE_2D, image_texture);
 
-    // Setup filtering parameters for display
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Setup filtering parameters for display
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // Upload pixels into texture
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    stbi_image_free(image_data);
+	// Upload pixels into texture
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0,
+				 GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+	stbi_image_free(image_data);
 
-    *out_texture = image_texture;
-    *out_width = image_width;
-    *out_height = image_height;
+	*out_texture = image_texture;
+	*out_width = image_width;
+	*out_height = image_height;
 
-    return true;
+	return true;
 }
 
 // Open and read a file, then forward to LoadTextureFromMemory()
-bool LoadTextureFromFile(const char* file_name, GLuint* out_texture, int* out_width, int* out_height)
-{
-    FILE* f = fopen(file_name, "rb");
-    if (f == NULL)
-        return false;
-    fseek(f, 0, SEEK_END);
-    size_t file_size = (size_t)ftell(f);
-    if (file_size == -1)
-        return false;
-    fseek(f, 0, SEEK_SET);
-    void* file_data = IM_ALLOC(file_size);
-    fread(file_data, 1, file_size, f);
-    fclose(f);
-    bool ret = LoadTextureFromMemory(file_data, file_size, out_texture, out_width, out_height);
-    IM_FREE(file_data);
-    return ret;
+bool LoadTextureFromFile(const char *file_name, GLuint *out_texture,
+						 int *out_width, int *out_height) {
+	FILE *f = fopen(file_name, "rb");
+	if (f == NULL)
+		return false;
+	fseek(f, 0, SEEK_END);
+	size_t file_size = (size_t)ftell(f);
+	if (file_size == -1)
+		return false;
+	fseek(f, 0, SEEK_SET);
+	void *file_data = IM_ALLOC(file_size);
+	fread(file_data, 1, file_size, f);
+	fclose(f);
+	bool ret = LoadTextureFromMemory(file_data, file_size, out_texture,
+									 out_width, out_height);
+	IM_FREE(file_data);
+	return ret;
 }

@@ -19,36 +19,36 @@ extern "C" {
 #include <string>
 
 class LuaConfig {
-private:
-    lua_State* state;
-    std::string filename;
+  private:
+	lua_State *state;
+	std::string filename;
 
-public:
-    LuaConfig(std::string);
-    ~LuaConfig();
+  public:
+	LuaConfig(std::string);
+	~LuaConfig();
 
-    bool loadConfigFile();
+	bool loadConfigFile();
 };
 
 struct ProgramSettings {
-    std::string program_name;
-    std::string font;
-    float font_size;
+	std::string program_name;
+	std::string font;
+	float font_size;
 
-    std::string test_audio_filename;
-    std::string audio_filename;
+	std::string test_audio_filename;
+	std::string audio_filename;
 
-    int window_w;
-    int window_h;
+	int window_w;
+	int window_h;
 
-    float audio_gain;
-    int sampling_rate;
+	float audio_gain;
+	int sampling_rate;
 
-    int detection_delay_ms;
-    float whistle_confidence_thresh;
-    int buffer_size;
-    int fft_size;
-    int fft_step;
+	int detection_delay_ms;
+	float whistle_confidence_thresh;
+	int buffer_size;
+	int fft_size;
+	int fft_step;
 };
 
 inline ProgramSettings programSettings;
