@@ -13,6 +13,8 @@ BraceWrapping:
   BeforeCatch: false
   IndentBraces: false
 
+BreakBeforeBinaryOperators: All
+
 UseTab: Always
 IndentWidth: 4
 TabWidth: 4

@@ -25,13 +25,13 @@
 #include <vector>
 
 ADMainWindow::ADMainWindow() {
-	windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove |
-				  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar |
-				  ImGuiWindowFlags_NoBringToFrontOnFocus |
-				  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-				  ImGuiWindowFlags_NoBackground;
-	childFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize |
-				 ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
+	windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove
+				  | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
+				  | ImGuiWindowFlags_NoBringToFrontOnFocus
+				  | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse
+				  | ImGuiWindowFlags_NoBackground;
+	childFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AlwaysAutoResize
+				 | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY;
 
 	/* Set the default viewport info */
 	const ImGuiViewport *viewport = ImGui::GetMainViewport();
@@ -133,8 +133,8 @@ void ADMainWindow::AudioTimeline::show(float sizeW, float sizeH,
 		ImGui::BeginChild("audio_timeline", ImVec2(sizeW, sizeH), flags);
 		ImGui::SeparatorText("Audio Timeline");
 
-		ImPlotFlags plotFlags = ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
-								ImPlotFlags_NoInputs;
+		ImPlotFlags plotFlags = ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect
+								| ImPlotFlags_NoInputs;
 		if (ImPlot::BeginPlot("##plot_timeline", ImGui::GetContentRegionAvail(),
 							  plotFlags)) {
 			ImPlot::SetupAxisLimits(ImAxis_X1, 0, 30);
@@ -314,24 +314,24 @@ void ADMainWindow::EventLog::show(float sizeW, float sizeH,
 		ImGui::BeginChild("event_log", ImVec2(sizeW, sizeH), flags);
 		ImGui::SeparatorText("Event Log");
 
-		const std::vector<std::string> tempList = {
-			"01234: Whistle has been detected",
-			"05678: Whistle has been detected",
-			"01234: Whistle has been detected",
-			"05678: Whistle has been detected"};
+		const std::vector<std::string> tempList
+			= {"01234: Whistle has been detected",
+			   "05678: Whistle has been detected",
+			   "01234: Whistle has been detected",
+			   "05678: Whistle has been detected"};
 		static int list_selected_index = 0;
-		int item_highlighted_idx =
-			-1; // Here we store our highlighted data as an index.
+		int item_highlighted_idx
+			= -1; // Here we store our highlighted data as an index.
 
 		if (ImGui::BeginListBox("##event_log_list_box",
 								ImGui::GetContentRegionAvail())) {
 			for (int item = 0; item < static_cast<int>(tempList.size());
 				 item++) {
 				bool is_selected = (list_selected_index == item);
-				ImGuiSelectableFlags flags =
-					(item_highlighted_idx == item)
-						? ImGuiSelectableFlags_Highlight
-						: 0;
+				ImGuiSelectableFlags flags
+					= (item_highlighted_idx == item)
+						  ? ImGuiSelectableFlags_Highlight
+						  : 0;
 				if (ImGui::Selectable(tempList[item].c_str(), is_selected,
 									  flags))
 					list_selected_index = item;
