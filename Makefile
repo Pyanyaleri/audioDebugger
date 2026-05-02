@@ -16,6 +16,7 @@ SOURCES =   $(SOURCE_DIR)/main.cpp \
 			$(SOURCE_DIR)/adFFT.cpp \
 			$(SOURCE_DIR)/audioPlayback.cpp \
 			$(SOURCE_DIR)/audioRW.cpp \
+			$(SOURCE_DIR)/glfwConfig.cpp \
 			$(SOURCE_DIR)/luaConfig.cpp \
 			$(SOURCE_DIR)/RE2023_whistleDetector.cpp \
 

@@ -10,9 +10,6 @@
  */
 
 /* System Library inclusions */
-#define GL_SILENCE_DEPRECATION
-#include <GLFW/glfw3.h> /* Will drag system OpenGL headers */
-
 #include <fmt/core.h>
 
 extern "C" {
@@ -46,10 +43,10 @@ extern "C" {
 #include "adFFT.h"
 #include "audioPlayback.h"
 #include "audioRW.h"
+#include "glfwConfig.h"
 #include "luaConfig.h"
 #include "mainWindow.h"
 
-static void glfw_error_callback(int, const char*);
 void customTestWindow(ImGuiIO*, bool&, bool&, ImVec4*);
 bool LoadTextureFromFile(const char*, GLuint*, int*, int*);
 bool LoadTextureFromMemory(const void*, size_t, GLuint*, int*, int*);
@@ -60,24 +57,8 @@ int main(int, char**)
     LuaConfig luaConfigInstance("settings.lua");
     luaConfigInstance.loadConfigFile();
 
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit()) {
-        return EXIT_FAILURE;
-    }
-
-    /* GL 3.0 + GLSL 130 */
-    const char* glsl_version = "#version 130";
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
-    /* Create window with graphics context */
-    GLFWwindow* window = glfwCreateWindow(programSettings.window_w, programSettings.window_h, programSettings.program_name.c_str(), nullptr, nullptr);
-    if (window == nullptr) {
-        return EXIT_FAILURE;
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); /* Enable vsync */
+    /* Initializing GLFW Infrastructure */
+    GLFW_Config glfwConfig;
 
     /* Setup Dear ImGui context */
     IMGUI_CHECKVERSION();
@@ -92,8 +73,8 @@ int main(int, char**)
     ImGui::StyleColorsDark();
 
     /* Setup Platform/Renderer backends */
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui_ImplGlfw_InitForOpenGL(glfwConfig.getWindow(), true);
+    ImGui_ImplOpenGL3_Init(glfwConfig.getGLSLVersion());
 
     /* Load Fonts */
     ImFont* font = io.Fonts->AddFontFromFileTTF(programSettings.font.c_str(), programSettings.font_size);
@@ -113,7 +94,7 @@ int main(int, char**)
     fmt::print("Opening windows...\n");
     ADMainWindow mainWindowOBj;
 
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwConfig.windowShouldClose()) {
 
         /* Poll and handle events (inputs, window resize, etc.) */
         glfwPollEvents();
@@ -135,13 +116,13 @@ int main(int, char**)
         // Rendering
         ImGui::Render();
         int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glfwGetFramebufferSize(glfwConfig.getWindow(), &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(glfwConfig.getWindow());
     }
 
     /* Cleanup */
@@ -150,16 +131,8 @@ int main(int, char**)
     ImGui::DestroyContext();
     ImPlot::DestroyContext();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
-
     fmt::print("Program Completed!\n");
     return EXIT_SUCCESS;
-}
-
-static void glfw_error_callback(int error, const char* description)
-{
-    fmt::print(stderr, "GLFW Error {}: {}\n", error, description);
 }
 
 bool LoadTextureFromMemory(const void* data, size_t data_size, GLuint* out_texture, int* out_width, int* out_height)
