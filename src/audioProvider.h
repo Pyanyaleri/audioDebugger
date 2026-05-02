@@ -12,26 +12,31 @@
  *
  */
 
-#ifndef AD_AUDIO_PB_H
-#define AD_AUDIO_PB_H
+#ifndef AD_AUDIO_H
+#define AD_AUDIO_H
 
 #include "miniaudio.h"
 #include <string>
 
-class ADAudioPlayback {
+class AudioProvider {
 private:
     ma_result result;
     ma_decoder decoder;
     ma_device_config deviceConfig;
     ma_device device;
 
+    bool play;
+    bool deviceInitialized;
+
 public:
-    ADAudioPlayback() = default;
-    ADAudioPlayback(std::string);
-    ~ADAudioPlayback();
+    AudioProvider();
+    AudioProvider(std::string);
+    ~AudioProvider();
 
     static void dataCallback(ma_device*, void*, const void*, ma_uint32);
+    void loadAudioFile(std::string);
     void playAudio();
+    void pauseAudio();
 };
 
-#endif /* AD_AUDIO_PB_H */
+#endif /* AD_AUDIO_H */

@@ -41,8 +41,7 @@ extern "C" {
 
 #include "RE2023_whistleDetector.h"
 #include "adFFT.h"
-#include "audioPlayback.h"
-#include "audioRW.h"
+#include "audioProvider.h"
 #include "glfwConfig.h"
 #include "luaConfig.h"
 #include "mainWindow.h"
@@ -57,8 +56,9 @@ int main(int, char**)
     LuaConfig luaConfigInstance("settings.lua");
     luaConfigInstance.loadConfigFile();
 
-    ADAudioPlayback testAudio(programSettings.test_audio_filename);
-    testAudio.playAudio();
+    AudioProvider audioProvider;
+    audioProvider.loadAudioFile(programSettings.test_audio_filename);
+    // testAudio.playAudio();
 
     /* Initializing GLFW Infrastructure */
     GLFW_Config glfwConfig;
