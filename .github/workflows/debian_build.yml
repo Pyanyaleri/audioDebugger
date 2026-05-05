@@ -1,0 +1,51 @@
+name: Build audioDebugger (Debian)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-debian:
+    name: Build (Debian)
+    runs-on: ubuntu-latest
+    container:
+      image: debian:latest
+
+    steps:
+      - name: Checkout latest
+        uses: actions/checkout@v6
+
+      - name: Installing dependencies
+        run: |
+          apt update
+          apt install -y \
+            build-essential \
+            libasound2-dev \
+            libfftw3-dev \
+            libfmt-dev \
+            libgio-2.0-dev \
+            libglfw3-dev \
+            libglib2.0-dev \
+            libhdf5-dev \
+            libportal-dev \
+            liblua5.4-dev \
+            libprotobuf-dev \
+            protobuf-compiler
+
+      - name: Create Build Directory
+        run: mkdir build
+
+      - name: Ubuntu patch for Lua
+        run: |
+          sed -i 's/-lhdf5 -llua/$(shell pkg-config --libs lua5.4 hdf5)/' Makefile
+          sed -i 's/pkg-config --cflags glfw3/pkg-config --cflags glfw3 hdf5 lua5.4/' Makefile
+
+      - name: Build Program
+        run: make

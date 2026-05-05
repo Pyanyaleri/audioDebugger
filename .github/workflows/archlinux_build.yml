@@ -1,0 +1,28 @@
+name: Build audioDebugger (Arch Linux)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-arch:
+    name: Build (Arch Linux)
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+
+    steps:
+      - name: Checkout latest
+        uses: actions/checkout@v6
+
+      - name: Installing dependencies
+        run: pacman -Syu --noconfirm alsa-lib fftw fmt glfw glib2 hdf5 libportal lua protobuf
+
+      - name: mkdir build
+        run: mkdir build
+
+      - name: make
+        run: make
