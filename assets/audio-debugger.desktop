@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=audioDebugger
+Comment=Audio Debugger tool developed for use in RoboCup
+Icon=
+Exec=/opt/audioDebugger/audioDebugger
+Terminal=false
+Type=Application
+Categories=Audio;Development;
