@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build audioDebugger
 
 on:
   push:
@@ -7,14 +7,21 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
-    runs-on: archlinux-latest
+  build-arch:
+    name: Build (Arch Linux)
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout latest
+      uses: actions/checkout@v4
+      
+    - name: Installing dependencies
+      run: pacman -Syu --noconfirm alsa-lib fftw fmt glfw glib2 libportal lua protobuf
+
     - name: mkdir build
       run: mkdir build
+      
     - name: make
       run: make
-
